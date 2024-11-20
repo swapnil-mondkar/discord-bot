@@ -7,7 +7,7 @@
 
 # loader.py
 
-from commands import events, message
+from commands import events, message, purge
 
 def setup_bot(bot):
     """
@@ -24,6 +24,9 @@ def setup_bot(bot):
 
     # Register message handling module
     message.setup(bot)
+
+    # Register purge handling module
+    purge.setup(bot)
 
     # Log the successful loading of all modules
     print("All modules have been loaded successfully.")

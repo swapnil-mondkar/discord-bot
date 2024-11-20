@@ -8,6 +8,7 @@
 # executor.py
 
 import config
+from commands.logger import log_error
 
 def run_bot(bot):
     """
@@ -25,7 +26,7 @@ def run_bot(bot):
 
     # If the token is not found, print an error and exit
     if not TOKEN:
-        print("DISCORD_TOKEN not found in .env file.")
+        log_error("DISCORD_TOKEN not found in .env file.")
         exit()
 
     try:
@@ -33,4 +34,4 @@ def run_bot(bot):
         bot.run(TOKEN)
     except Exception as e:
         # Handle any errors that occur during bot startup
-        print(f"Error starting the bot: {e}")
+        log_error(f"Error starting the bot: {e}")
