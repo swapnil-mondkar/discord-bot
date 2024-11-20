@@ -1,0 +1,14 @@
+from discord import Intents
+
+def setup_intents():
+    # Create a default set of intents
+    intents = Intents.default()
+
+    # Enable intent to read message content (necessary for processing messages)
+    intents.message_content = True
+
+    # Enable intent to listen for member events (necessary for tracking when members join/leave)
+    intents.members = True
+
+    # Return the configured intents object
+    return intents
