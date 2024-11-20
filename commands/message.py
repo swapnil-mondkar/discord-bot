@@ -8,12 +8,7 @@
 # message.py
 
 from discord import Message
-from datetime import datetime
-from mongo import connect_mongo  # Import the MongoDB connection function
-
-# Connect to MongoDB
-db = connect_mongo()
-logs_collection = db["logs"]  # Access the "logs" collection
+from logger import log_to_mongo
 
 def setup(client):
     @client.event
@@ -23,17 +18,14 @@ def setup(client):
 
         try:
             # Prepare log entry
-            log_entry = {
-                "author": message.author.name,
-                "author_id": str(message.author.id),
-                "message": message.content,
-                "timestamp": datetime.utcnow(),  # Use UTC for consistent timestamping
-                "channel": message.channel.name,  # Add channel name for better context
-                "message_length": len(message.content)  # Log the message length
-            }
+            # Log the message to MongoDB
+            log_to_mongo(
+                author_name=message.author.name,
+                author_id=str(message.author.id),
+                message=message.content,
+                channel_name=message.channel.name,
+            )
 
-            # Insert the log entry into the "logs" collection
-            logs_collection.insert_one(log_entry)
         except Exception as e:
             print(f"Error in Storing Logs.")
         
