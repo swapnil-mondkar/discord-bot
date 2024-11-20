@@ -1,0 +1,25 @@
+# Copyright (c) 2024 NULL Lab
+# All rights reserved.
+# 
+# This file is part of the NULL Lab project.
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+# Proprietary and confidential.
+
+# main.py
+
+from intents import create_bot
+from loader import setup_bot
+from executor import run_bot
+from mongo import connect_mongo
+
+# Create the bot instance
+bot = create_bot()
+
+# Setup external modules (events and commands)
+setup_bot(bot)
+
+# Run the bot with the token
+run_bot(bot)
+
+# Connect to the local MongoDB database
+db = connect_mongo()
