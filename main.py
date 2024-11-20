@@ -9,13 +9,10 @@
 
 from dotenv import load_dotenv
 from discord import Client
-from config import setup_intents
+from intents import setup_intents
 from loader import setup_bot
 from executor import run_bot
 from mongo import connect_mongo
-
-# Load environment variables and initialize the bot
-load_dotenv()
 
 # Create the client with intents
 client = Client(intents=setup_intents())

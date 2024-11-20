@@ -7,17 +7,17 @@
 
 # config.py
 
-from discord import Intents
+import os
+from dotenv import load_dotenv
 
-def setup_intents():
-    # Create a default set of intents
-    intents = Intents.default()
+# Load environment variables from the .env file
+load_dotenv()
 
-    # Enable intent to read message content (necessary for processing messages)
-    intents.message_content = True
+# MongoDB configuration
+MONGO_URL = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_DB = os.getenv("MONGO_DB", "bot")
 
-    # Enable intent to listen for member events (necessary for tracking when members join/leave)
-    intents.members = True
-
-    # Return the configured intents object
-    return intents
+# Discord configuration
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+CHANNEL_FOR_MESSAGE = os.getenv("CHANNEL_FOR_MESSAGE")
+CHANNEL_FOR_LOGS = os.getenv("CHANNEL_FOR_LOGS")

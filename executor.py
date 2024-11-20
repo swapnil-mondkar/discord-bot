@@ -7,7 +7,7 @@
 
 # executor.py
 
-import os
+import config
 
 def run_bot(client):
     """
@@ -21,7 +21,7 @@ def run_bot(client):
         client (Client): The Discord bot client instance to run.
     """
     # Retrieve the bot token from the environment
-    TOKEN = os.getenv('DISCORD_TOKEN')
+    TOKEN = config.DISCORD_TOKEN
 
     # If the token is not found, print an error and exit
     if not TOKEN:

@@ -8,11 +8,11 @@
 # mongo.py
 
 from pymongo import MongoClient
-import os
+import config
 
 # MongoDB connection setup
 def connect_mongo():
-    mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-    client = MongoClient(mongo_uri)
-    db = client["bot"]  # Use your database name here
+    # Get MongoDB URL and DB name from environment variables
+    client = MongoClient(config.MONGO_URL)
+    db = client[config.MONGO_DB]  # Use the database name from environment
     return db
