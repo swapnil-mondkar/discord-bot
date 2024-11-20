@@ -8,7 +8,7 @@
 # message.py
 
 from discord import Message
-from logger import log_to_mongo
+from .logger import log_to_mongo, log_error
 
 def setup(client):
     @client.event
@@ -27,7 +27,7 @@ def setup(client):
             )
 
         except Exception as e:
-            print(f"Error in Storing Logs.")
+            log_error(f"Error in Storing Logs.")
         
         print(f"Bot User: {client.user}")
         print(f"Message from {message.author}: {message.content}")
@@ -39,7 +39,7 @@ def setup(client):
 # Utility function to send messages
 async def send_message(message: Message, user_message: str) -> None:
     if not user_message:
-        print("Empty message received.")
+        log_error(f"Empty message received.")
         return
 
     response = f"Hello! You said: {user_message}"

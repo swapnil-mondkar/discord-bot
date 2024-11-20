@@ -9,6 +9,7 @@
 
 from discord import Member, Embed
 import config
+from commands.logger import log_error
 
 def setup(client):
     """
@@ -38,7 +39,7 @@ def setup(client):
 
             await channel.send(embed=embed)
         else:
-            print(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
+            log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
 
     # Event for when a member leaves the server
     @client.event
@@ -64,4 +65,4 @@ def setup(client):
 
             await channel.send(embed=embed)
         else:
-            print(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
+            log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
