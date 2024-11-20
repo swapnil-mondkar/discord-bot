@@ -31,5 +31,5 @@ def create_bot():
         Bot: The configured Discord Bot instance.
     """
     intents = setup_intents()
-    bot = Bot(command_prefix="/", intents=intents)
+    bot = Bot(command_prefix="!", intents=intents)
     return bot

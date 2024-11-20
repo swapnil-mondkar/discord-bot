@@ -7,40 +7,34 @@
 
 # message.py
 
-from discord import Message
 from .logger import log_to_mongo, log_error
 
-def setup(client):
-    @client.event
-    async def on_message(message: Message):
-        if message.author == client.user:
+def setup(bot):
+
+    # Define the `/pm` command
+    @bot.command()
+    async def pm(ctx, *, user_message: str = None):
+        # Check if the user provided a message
+        if not user_message:
+            await ctx.send("😕 Please provide a message after `/pm`. Example: `/pm Hello Bot!`")
             return
 
+        # Log the message to MongoDB
         try:
-            # Prepare log entry
-            # Log the message to MongoDB
             log_to_mongo(
-                author_name=message.author.name,
-                author_id=str(message.author.id),
-                message=message.content,
-                channel_name=message.channel.name,
+                author_name=ctx.author.name,
+                author_id=str(ctx.author.id),
+                message=user_message,
+                channel_name=ctx.channel.name,
             )
-
+            print(f"Message logged: {user_message} from {ctx.author.name}")
         except Exception as e:
-            log_error(f"Error in Storing Logs.")
-        
-        print(f"Bot User: {client.user}")
-        print(f"Message from {message.author}: {message.content}")
+            log_error(f"Error storing message log: {e}")
+            await ctx.send("⚠️ Something went wrong while logging the message. Please try again later.")
 
-        # Process user message
-        user_message = message.content
-        await send_message(message, user_message)
+        # Process the user message and send a response
+        print(f"Bot User: {bot.user}")
+        print(f"Message from {ctx.author}: {user_message}")
 
-# Utility function to send messages
-async def send_message(message: Message, user_message: str) -> None:
-    if not user_message:
-        log_error(f"Empty message received.")
-        return
-
-    response = f"Hello! You said: {user_message}"
-    await message.channel.send(response)
+        # Provide a friendly acknowledgment of the received message
+        await ctx.send(f"✔️ Got your message: **{user_message}**. Thanks for reaching out!")
