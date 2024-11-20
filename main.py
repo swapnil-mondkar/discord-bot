@@ -7,21 +7,19 @@
 
 # main.py
 
-from dotenv import load_dotenv
-from discord import Client
-from intents import setup_intents
+from intents import create_bot
 from loader import setup_bot
 from executor import run_bot
 from mongo import connect_mongo
 
-# Create the client with intents
-client = Client(intents=setup_intents())
+# Create the bot instance
+bot = create_bot()
 
-# Setup external modules (events and message)
-setup_bot(client)
+# Setup external modules (events and commands)
+setup_bot(bot)
 
 # Run the bot with the token
-run_bot(client)
+run_bot(bot)
 
 # Connect to the local MongoDB database
 db = connect_mongo()

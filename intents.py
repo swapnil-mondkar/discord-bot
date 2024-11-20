@@ -5,9 +5,10 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# config.py
+# intents.py
 
 from discord import Intents
+from discord.ext.commands import Bot
 
 def setup_intents():
     # Create a default set of intents
@@ -21,3 +22,14 @@ def setup_intents():
 
     # Return the configured intents object
     return intents
+
+def create_bot():
+    """
+    Create and configure the bot instance.
+    
+    Returns:
+        Bot: The configured Discord Bot instance.
+    """
+    intents = setup_intents()
+    bot = Bot(command_prefix="/", intents=intents)
+    return bot

@@ -8,18 +8,12 @@
 # events.py
 
 from discord import Member, Embed
+import config
 
 def setup(client):
     """
     Set up the event handlers for the client.
     """
-    # Event for when the bot is ready
-    @client.event
-    async def on_ready():
-        """
-        Called when the bot successfully connects to Discord.
-        """
-        print(f"Logged in as {client.user}!")
 
     # Event for when a new member joins the server
     @client.event
@@ -28,7 +22,7 @@ def setup(client):
         Called when a new member joins the server.
         Sends a welcome message in the specified channel.
         """
-        specific_channel_id = 1296528681732407408  # Replace with your actual channel ID
+        specific_channel_id = config.CHANNEL_FOR_MESSAGE
         channel = member.guild.get_channel(specific_channel_id)
 
         if channel:
@@ -53,7 +47,7 @@ def setup(client):
         Called when a member leaves the server.
         Sends a goodbye message in the specified channel.
         """
-        specific_channel_id = 1296528681732407408  # Replace with your actual channel ID
+        specific_channel_id = config.CHANNEL_FOR_MESSAGE
         channel = member.guild.get_channel(specific_channel_id)
 
         if channel:

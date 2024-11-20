@@ -9,7 +9,7 @@
 
 import config
 
-def run_bot(client):
+def run_bot(bot):
     """
     Retrieves the bot token from the environment and starts the bot.
     
@@ -18,7 +18,7 @@ def run_bot(client):
     is an error during startup, it will print an error message.
 
     Args:
-        client (Client): The Discord bot client instance to run.
+        bot (bot): The Discord bot bot instance to run.
     """
     # Retrieve the bot token from the environment
     TOKEN = config.DISCORD_TOKEN
@@ -30,7 +30,7 @@ def run_bot(client):
 
     try:
         # Start the bot using the provided token
-        client.run(TOKEN)
+        bot.run(TOKEN)
     except Exception as e:
         # Handle any errors that occur during bot startup
         print(f"Error starting the bot: {e}")

@@ -9,7 +9,7 @@
 
 from commands import events, message
 
-def setup_bot(client):
+def setup_bot(bot):
     """
     Loads and sets up all required bot modules.
 
@@ -17,13 +17,13 @@ def setup_bot(client):
     necessary for the bot to function properly.
 
     Args:
-        client (Client): The Discord bot client instance to bind modules to.
+        bot (bot): The Discord bot bot instance to bind modules to.
     """
     # Register event handling module
-    events.setup(client)
+    events.setup(bot)
 
     # Register message handling module
-    message.setup(client)
+    message.setup(bot)
 
     # Log the successful loading of all modules
     print("All modules have been loaded successfully.")
