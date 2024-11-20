@@ -1,8 +1,18 @@
+# Copyright (c) 2024 NULL Lab
+# All rights reserved.
+# 
+# This file is part of the NULL Lab project.
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+# Proprietary and confidential.
+
+# main.py
+
 from dotenv import load_dotenv
 from discord import Client
-from intents_setup import setup_intents
+from config import setup_intents
 from loader import setup_bot
-from bot_runner import run_bot
+from executor import run_bot
+from mongo import connect_mongo
 
 # Load environment variables and initialize the bot
 load_dotenv()
@@ -15,3 +25,6 @@ setup_bot(client)
 
 # Run the bot with the token
 run_bot(client)
+
+# Connect to the local MongoDB database
+db = connect_mongo()
