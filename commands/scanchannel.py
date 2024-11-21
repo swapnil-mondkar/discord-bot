@@ -60,4 +60,3 @@ def setup(bot):
         except Exception as e:
             await ctx.send("⚠️ Something went wrong while scanning channels.")
             log_error(f"Error in scanchannel: {e}")
-            print(f"Error in scanchannel: {e}")
