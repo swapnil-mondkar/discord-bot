@@ -9,15 +9,15 @@
 
 from discord import Member, Embed
 import config
-from commands.logger import log_error
+from .logger import log_error
 
-def setup(client):
+def setup(bot):
     """
-    Set up the event handlers for the client.
+    Set up the event handlers for the bot.
     """
 
     # Event for when a new member joins the server
-    @client.event
+    @bot.event
     async def on_member_join(member: Member):
         """
         Called when a new member joins the server.
@@ -42,7 +42,7 @@ def setup(client):
             log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
 
     # Event for when a member leaves the server
-    @client.event
+    @bot.event
     async def on_member_remove(member: Member):
         """
         Called when a member leaves the server.

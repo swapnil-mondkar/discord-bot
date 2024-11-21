@@ -14,10 +14,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB configuration
-MONGO_URL = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 MONGO_DB = os.getenv("MONGO_DB", "bot")
 
 # Discord configuration
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 CHANNEL_FOR_MESSAGE = os.getenv("CHANNEL_FOR_MESSAGE")
 CHANNEL_FOR_LOGS = os.getenv("CHANNEL_FOR_LOGS")
+
+# Command configuration
+COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")

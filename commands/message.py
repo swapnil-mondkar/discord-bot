@@ -37,4 +37,4 @@ def setup(bot):
         print(f"Message from {ctx.author}: {user_message}")
 
         # Provide a friendly acknowledgment of the received message
-        await ctx.send(f"✔️ Got your message: **{user_message}**. Thanks for reaching out!")
+        await ctx.send(f"✔️ Got your message: **{user_message}**. Stored!")

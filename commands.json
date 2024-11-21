@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Message Command",
+        "example": "/pm <message_content>",
+        "description": "Sends back the same message prefixed with 'Hello'. Useful for testing bot responses.",
+        "timestamp": "2024-11-21T12:00:00Z"
+    },
+    {
+        "name": "Purge Command",
+        "example": "/purge <line_count> [user_name (optional)]",
+        "description": "Deletes a specified number of recent messages. If a username is provided, only that user's messages are deleted.",
+        "timestamp": "2024-11-21T13:00:00Z"
+    },
+    {
+        "name": "Scan Channels Command",
+        "example": "/scanchannel",
+        "description": "Scans all channels in the server and stores the retrieved data in the database for further analysis.",
+        "timestamp": "2024-11-21T14:00:00Z"
+    }
+]
