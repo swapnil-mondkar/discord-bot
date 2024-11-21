@@ -21,3 +21,6 @@ MONGO_DB = os.getenv("MONGO_DB", "bot")
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 CHANNEL_FOR_MESSAGE = os.getenv("CHANNEL_FOR_MESSAGE")
 CHANNEL_FOR_LOGS = os.getenv("CHANNEL_FOR_LOGS")
+
+# Command configuration
+COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")

@@ -36,9 +36,9 @@ def setup_bot(bot):
                 # Call the `setup` function in the module, passing the bot
                 if hasattr(module, "setup"):
                     module.setup(bot)
-                    print(f"Loaded module: {module_name}")
-                else:
-                    print(f"Skipped module (no setup function): {module_name}")
+                    # print(f"Loaded module: {module_name}")
+                # else:
+                #     print(f"Skipped module (no setup function): {module_name}")
 
             except Exception as e:
                 print(f"Error loading module {module_name}: {e}")

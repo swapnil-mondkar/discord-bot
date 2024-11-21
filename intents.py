@@ -7,6 +7,7 @@
 
 # intents.py
 
+import config
 from discord import Intents
 from discord.ext.commands import Bot
 
@@ -31,5 +32,5 @@ def create_bot():
         Bot: The configured Discord Bot instance.
     """
     intents = setup_intents()
-    bot = Bot(command_prefix="!", intents=intents)
+    bot = Bot(command_prefix = config.COMMAND_PREFIX, intents=intents)
     return bot
