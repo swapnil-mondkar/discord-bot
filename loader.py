@@ -7,26 +7,41 @@
 
 # loader.py
 
-from commands import events, message, purge
+import os
+import importlib
 
 def setup_bot(bot):
     """
-    Loads and sets up all required bot modules.
+    Automatically loads and sets up all command modules in the `commands` directory.
 
-    This function is responsible for registering all events and commands 
-    necessary for the bot to function properly.
+    This function dynamically imports and registers all modules from the `commands` 
+    directory, ensuring all events and commands are properly initialized.
 
     Args:
-        bot (bot): The Discord bot bot instance to bind modules to.
+        bot (commands.Bot): The Discord bot instance to bind modules to.
     """
-    # Register event handling module
-    events.setup(bot)
+    # Define the directory containing command modules
+    commands_dir = "commands"
 
-    # Register message handling module
-    message.setup(bot)
+    # Iterate through all Python files in the `commands` directory
+    for filename in os.listdir(commands_dir):
+        if filename.endswith(".py") and filename != "__init__.py":
+            # Extract the module name (without .py)
+            module_name = f"{commands_dir}.{filename[:-3]}"
 
-    # Register purge handling module
-    purge.setup(bot)
+            try:
+                # Import the module dynamically
+                module = importlib.import_module(module_name)
+
+                # Call the `setup` function in the module, passing the bot
+                if hasattr(module, "setup"):
+                    module.setup(bot)
+                    print(f"Loaded module: {module_name}")
+                else:
+                    print(f"Skipped module (no setup function): {module_name}")
+
+            except Exception as e:
+                print(f"Error loading module {module_name}: {e}")
 
     # Log the successful loading of all modules
     print("All modules have been loaded successfully.")

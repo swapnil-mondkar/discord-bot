@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB configuration
-MONGO_URL = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 MONGO_DB = os.getenv("MONGO_DB", "bot")
 
 # Discord configuration
