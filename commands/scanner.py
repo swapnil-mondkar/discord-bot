@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# scanmember.py
+# scanner.py
 
 from .logger import log_to_mongo, log_error
 from mongo import connect_mongo
@@ -15,6 +15,54 @@ guilds_collection = db["guilds"]
 
 def setup(bot):
 
+    # scanchannel
+    @bot.command()
+    async def scanchannel(ctx):
+        try:
+            # Check if the command is issued in a guild (server)
+            if ctx.guild is None:
+                await ctx.send("This command can only be used in a server.")
+                return
+
+            # Get guild (server) information
+            guild_id = ctx.guild.id
+            guild_name = ctx.guild.name
+
+            # Separate text and voice channels
+            text_channels = [
+                {"channel_id": channel.id, "channel_name": channel.name}
+                for channel in ctx.guild.text_channels
+            ]
+            voice_channels = [
+                {"channel_id": channel.id, "channel_name": channel.name}
+                for channel in ctx.guild.voice_channels
+            ]
+
+            # Prepare the data to store in MongoDB
+            guild_data = {
+                "guild_id": guild_id,
+                "guild_name": guild_name,
+                "text_channels": text_channels,
+                "voice_channels": voice_channels,
+            }
+
+            # Upsert the guild data into MongoDB (update if exists, insert if not)
+            guilds_collection.update_one(
+                {"guild_id": guild_id},
+                {"$set": guild_data},
+                upsert=True
+            )
+
+            # Send confirmation message
+            await ctx.send(
+                f"Scanned {len(text_channels)} text channels and {len(voice_channels)} voice channels in '{guild_name}' and stored in the database."
+            )
+
+        except Exception as e:
+            await ctx.send("⚠️ Something went wrong while scanning channels.")
+            log_error(f"Error in scanchannel: {e}")
+
+    # scanmember
     @bot.command()
     async def scanmember(ctx):
         try:
