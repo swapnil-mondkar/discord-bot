@@ -15,7 +15,7 @@ guilds_collection = db["guilds"]
 
 def setup(bot):
 
-    # scanchannel 
+    # scanchannel
     @bot.command()
     async def scanchannel(ctx):
         try:
