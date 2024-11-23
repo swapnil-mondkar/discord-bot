@@ -238,3 +238,85 @@ def setup(bot):
         overwrite.send_messages = None  # Reset to default
         await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
         await ctx.send(f"🔓 {channel.name} has been unlocked.")
+
+    # Define the `/slowmode` command
+    @bot.command()
+    async def slowmode(ctx, seconds: int = 0):
+        if not ctx.author.guild_permissions.manage_channels:
+            await ctx.send("⚠️ You do not have permission to set slowmode.")
+            return
+
+        if seconds < 0:
+            await ctx.send("⚠️ Slowmode duration must be 0 or greater.")
+            return
+
+        await ctx.channel.edit(slowmode_delay=seconds)
+        if seconds == 0:
+            await ctx.send(f"✅ Slowmode has been disabled for {ctx.channel.name}.")
+        else:
+            await ctx.send(f"✅ Slowmode has been set to {seconds} seconds for {ctx.channel.name}.")
+
+    # Define the `/addrole` command
+    @bot.command()
+    async def addrole(ctx, user: discord.Member = None, *, role_name: str = None):
+        if not ctx.author.guild_permissions.manage_roles:
+            await ctx.send("⚠️ You do not have permission to manage roles.")
+            return
+
+        if not user or not role_name:
+            await ctx.send("⚠️ Please mention a user and specify a role.")
+            return
+
+        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        if not role:
+            await ctx.send(f"⚠️ Role '{role_name}' not found.")
+            return
+
+        await user.add_roles(role)
+        await ctx.send(f"✅ {role_name} role has been assigned to {user.name}.")
+
+    # Define the `/removerole` command
+    @bot.command()
+    async def removerole(ctx, user: discord.Member = None, *, role_name: str = None):
+        if not ctx.author.guild_permissions.manage_roles:
+            await ctx.send("⚠️ You do not have permission to manage roles.")
+            return
+
+        if not user or not role_name:
+            await ctx.send("⚠️ Please mention a user and specify a role.")
+            return
+
+        role = discord.utils.get(ctx.guild.roles, name=role_name)
+        if not role:
+            await ctx.send(f"⚠️ Role '{role_name}' not found.")
+            return
+
+        await user.remove_roles(role)
+        await ctx.send(f"✅ {role_name} role has been removed from {user.name}.")
+
+    # Define the `/userinfo` command
+    @bot.command()
+    async def userinfo(ctx, user: discord.Member = None):
+        user = user or ctx.author
+        embed = discord.Embed(title="User Info", color=discord.Color.blue())
+        embed.set_thumbnail(url=user.avatar.url)
+        embed.add_field(name="Username", value=user.name, inline=True)
+        embed.add_field(name="ID", value=user.id, inline=True)
+        embed.add_field(name="Joined Server", value=user.joined_at.strftime("%Y-%m-%d"), inline=True)
+        embed.add_field(name="Account Created", value=user.created_at.strftime("%Y-%m-%d"), inline=True)
+        roles = [role.mention for role in user.roles if role != ctx.guild.default_role]
+        embed.add_field(name="Roles", value=", ".join(roles) if roles else "None", inline=False)
+        await ctx.send(embed=embed)
+
+    # Define the `/serverinfo` command
+    @bot.command()
+    async def serverinfo(ctx):
+        guild = ctx.guild
+        embed = discord.Embed(title=f"Server Info - {guild.name}", color=discord.Color.green())
+        embed.set_thumbnail(url=guild.icon.url)
+        embed.add_field(name="Owner", value=guild.owner.mention, inline=True)
+        embed.add_field(name="Members", value=guild.member_count, inline=True)
+        embed.add_field(name="Created At", value=guild.created_at.strftime("%Y-%m-%d"), inline=True)
+        embed.add_field(name="Region", value=str(guild.region), inline=True)
+        embed.add_field(name="Channels", value=len(guild.channels), inline=True)
+        await ctx.send(embed=embed)
