@@ -320,3 +320,77 @@ def setup(bot):
         embed.add_field(name="Region", value=str(guild.region), inline=True)
         embed.add_field(name="Channels", value=len(guild.channels), inline=True)
         await ctx.send(embed=embed)
+
+    # Define the `/temprole` command
+    @bot.command()
+    async def temprole(ctx, user: discord.Member = None, role_name: str = None, duration: int = 0):
+        if not ctx.author.guild_permissions.manage_roles:
+            await ctx.send("⚠️ You do not have permission to manage roles.")
+            return
+
+        if not user or not role_name or duration <= 0:
+            await ctx.send("⚠️ Please mention a valid user, role, and duration (in seconds).")
+            return
+
+        try:
+            role = discord.utils.get(ctx.guild.roles, name=role_name)
+            if not role:
+                await ctx.send(f"⚠️ Role '{role_name}' not found.")
+                return
+
+            await user.add_roles(role)
+            await ctx.send(f"✅ {role_name} has been assigned to {user.name} for {duration} seconds.")
+
+            await asyncio.sleep(duration)
+            if role in user.roles:
+                await user.remove_roles(role)
+                await ctx.send(f"✅ {role_name} has been removed from {user.name}.")
+        except Exception as e:
+            await ctx.send("⚠️ Something went wrong.")
+            log_error(f"Error in temprole command: {e}")
+
+    # Define the `/softban` command
+    @bot.command()
+    async def softban(ctx, user: discord.Member = None, *, reason: str = None):
+        if not ctx.author.guild_permissions.ban_members:
+            await ctx.send("⚠️ You do not have permission to ban members.")
+            return
+
+        if not user:
+            await ctx.send("⚠️ Please mention the user you want to softban.")
+            return
+
+        try:
+            await user.ban(reason=reason)
+            await user.unban(reason="Softban removal")
+            await ctx.send(f"✅ {user.name} has been softbanned. Reason: {reason if reason else 'No reason provided.'}")
+        except Exception as e:
+            await ctx.send("⚠️ Something went wrong.")
+            log_error(f"Error in softbanning user: {e}")
+
+    # Define the `/poll` command
+    @bot.command()
+    async def poll(ctx, *, question: str):
+        if not ctx.author.guild_permissions.manage_messages:
+            await ctx.send("⚠️ You do not have permission to create polls.")
+            return
+
+        embed = discord.Embed(title="📊 Poll", description=question, color=discord.Color.blue())
+        poll_message = await ctx.send(embed=embed)
+        await poll_message.add_reaction("👍")  # Yes
+        await poll_message.add_reaction("👎")  # No
+
+    # Define the `/announce` command
+    @bot.command()
+    async def announce(ctx, channel: discord.TextChannel = None, *, message: str = None):
+        if not ctx.author.guild_permissions.manage_messages:
+            await ctx.send("⚠️ You do not have permission to make announcements.")
+            return
+
+        if not channel or not message:
+            await ctx.send("⚠️ Please mention a channel and provide a message.")
+            return
+
+        embed = discord.Embed(title="📢 Announcement", description=message, color=discord.Color.gold())
+        await channel.send(embed=embed)
+        await ctx.send(f"✅ Announcement sent to {channel.mention}.")
