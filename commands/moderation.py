@@ -176,3 +176,65 @@ def setup(bot):
         except Exception as e:
             await ctx.send("⚠️ Something went wrong.")
             log_error(f"Error in unmuting user: {e}")
+
+    # Define the `/warn` command
+    @bot.command()
+    async def warn(ctx, user: discord.Member = None, *, reason: str = None):
+        if not ctx.author.guild_permissions.manage_messages:
+            await ctx.send("⚠️ You do not have permission to warn members.")
+            return
+
+        if not user:
+            await ctx.send("⚠️ Please mention the user you want to warn.")
+            return
+
+        reason = reason if reason else "No reason provided."
+        # Log warning to MongoDB or any database
+        # log_to_mongo(user_id=str(user.id), action="warn", reason=reason)
+        await ctx.send(f"⚠️ {user.name} has been warned. Reason: {reason}")
+
+    # Define the `/warnings` command
+    @bot.command()
+    async def warnings(ctx, user: discord.Member = None):
+        if not ctx.author.guild_permissions.manage_messages:
+            await ctx.send("⚠️ You do not have permission to view warnings.")
+            return
+
+        if not user:
+            await ctx.send("⚠️ Please mention the user whose warnings you want to view.")
+            return
+
+        # Fetch warnings from MongoDB or any database
+        # warnings = fetch_warnings(user_id=str(user.id))
+        warnings = ["Example Warning 1", "Example Warning 2"]  # Placeholder
+        if warnings:
+            warning_list = "\n".join([f"{idx+1}. {warning}" for idx, warning in enumerate(warnings)])
+            await ctx.send(f"⚠️ {user.name}'s warnings:\n{warning_list}")
+        else:
+            await ctx.send(f"✅ {user.name} has no warnings.")
+
+    # Define the `/lockdown` command
+    @bot.command()
+    async def lockdown(ctx, channel: discord.TextChannel = None):
+        if not ctx.author.guild_permissions.manage_channels:
+            await ctx.send("⚠️ You do not have permission to lockdown channels.")
+            return
+
+        channel = channel or ctx.channel
+        overwrite = channel.overwrites_for(ctx.guild.default_role)
+        overwrite.send_messages = False
+        await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
+        await ctx.send(f"🔒 {channel.name} has been locked down.")
+
+    # Define the `/unlock` command
+    @bot.command()
+    async def unlock(ctx, channel: discord.TextChannel = None):
+        if not ctx.author.guild_permissions.manage_channels:
+            await ctx.send("⚠️ You do not have permission to unlock channels.")
+            return
+
+        channel = channel or ctx.channel
+        overwrite = channel.overwrites_for(ctx.guild.default_role)
+        overwrite.send_messages = None  # Reset to default
+        await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
+        await ctx.send(f"🔓 {channel.name} has been unlocked.")
