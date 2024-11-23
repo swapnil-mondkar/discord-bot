@@ -115,3 +115,64 @@ def setup(bot):
         except Exception as e:
             await ctx.send("⚠️ Something went wrong.")
             log_error(f"Error in banning user: {e}")
+
+    # Define the `/mute` command
+    @bot.command()
+    async def mute(ctx, user: discord.Member = None, *, reason: str = None):
+        if not ctx.author.guild_permissions.manage_roles:
+            await ctx.send("⚠️ You do not have permission to mute members.")
+            return
+
+        if not user:
+            await ctx.send("⚠️ Please mention the user you want to mute.")
+            return
+
+        try:
+            muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+            if not muted_role:
+                muted_role = await ctx.guild.create_role(name="Muted")
+                for channel in ctx.guild.channels:
+                    await channel.set_permissions(muted_role, speak=False, send_messages=False, add_reactions=False)
+
+            if muted_role in user.roles:
+                await ctx.send(f"⚠️ {user.name} is already muted.")
+                return
+
+            await user.add_roles(muted_role, reason=reason)
+            await ctx.send(f"✅ {user.name} has been muted. Reason: {reason if reason else 'No reason provided.'}")
+
+        except discord.Forbidden:
+            await ctx.send("⚠️ I do not have permission to mute this user.")
+        except discord.HTTPException:
+            await ctx.send("⚠️ An error occurred while trying to mute the user.")
+        except Exception as e:
+            await ctx.send("⚠️ Something went wrong.")
+            log_error(f"Error in muting user: {e}")
+
+    # Define the `/unmute` command
+    @bot.command()
+    async def unmute(ctx, user: discord.Member = None):
+        if not ctx.author.guild_permissions.manage_roles:
+            await ctx.send("⚠️ You do not have permission to unmute members.")
+            return
+
+        if not user:
+            await ctx.send("⚠️ Please mention the user you want to unmute.")
+            return
+
+        try:
+            muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+            if not muted_role or muted_role not in user.roles:
+                await ctx.send(f"⚠️ {user.name} is not muted.")
+                return
+
+            await user.remove_roles(muted_role)
+            await ctx.send(f"✅ {user.name} has been unmuted.")
+
+        except discord.Forbidden:
+            await ctx.send("⚠️ I do not have permission to unmute this user.")
+        except discord.HTTPException:
+            await ctx.send("⚠️ An error occurred while trying to unmute the user.")
+        except Exception as e:
+            await ctx.send("⚠️ Something went wrong.")
+            log_error(f"Error in unmuting user: {e}")
