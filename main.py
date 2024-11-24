@@ -24,6 +24,3 @@ setup_bot(bot)
 
 # Run the bot with the token
 run_bot(bot)
-
-# Connect to the local MongoDB database
-db = connect_mongo()

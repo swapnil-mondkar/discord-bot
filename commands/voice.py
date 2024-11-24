@@ -5,10 +5,12 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# connect.py
+# voice.py
 
 import discord
 import yt_dlp as youtube_dl
+import asyncio
+import functools
 
 # A queue to hold song URLs
 music_queue = []
@@ -19,7 +21,6 @@ ytdl_format_options = {
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
-        'preferredquality': '192',
     }],
     'noplaylist': True,  # Ensure only a single track is fetched
     'quiet': True,       # Suppress unnecessary logs
@@ -67,17 +68,64 @@ def setup(bot):
         else:
             await ctx.send("I am not connected to any voice channel!")
 
+    # TODO - Swapnil make it better.
+    async def fetch_youtube_results(query):
+        try:
+            loop = asyncio.get_event_loop()
+            ytdl_search = functools.partial(ytdl.extract_info, query, download=False)
+            return await loop.run_in_executor(None, ytdl_search)
+        except Exception as e:
+            print(f"Error during YouTube search: {e}")
+            return None
+
     # Define the `/play` command
     @bot.command()
-    async def play(ctx, *, url):
+    async def play(ctx, *, query):
         if not ctx.voice_client:
             await ctx.invoke(connect)
 
-        # Add the song to the queue
-        music_queue.append(url)
-        await ctx.send(f"Added to queue: {url}")
+        loading_message = await ctx.send("🔎 Searching for your song...")
 
-        # Play if nothing is currently playing
+        if query.startswith("http://") or query.startswith("https://"):
+            # Directly add URL to the queue
+            music_queue.append(query)
+            await loading_message.edit(content=f"✅ Added to queue: {query}")
+        else:
+            # Asynchronous search
+            search_query = f"ytsearch3:{query}"
+            search_results = await fetch_youtube_results(search_query)
+
+            if not search_results or 'entries' not in search_results or not search_results['entries']:
+                await loading_message.edit(content="⚠️ No results found!")
+                return
+
+            search_results = search_results['entries']
+
+            result_message = "**Search results:**\n"
+            for idx, video in enumerate(search_results, 1):
+                title = video['title']
+                duration = video.get('duration', 'Unknown')
+                result_message += f"{idx}. {title} ({duration} seconds)\n"
+            result_message += "\nType the number of the song you want to play (e.g., `1`)."
+
+            await loading_message.edit(content=result_message)
+
+            def check(m):
+                return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+
+            try:
+                response = await bot.wait_for('message', check=check, timeout=20)
+                selection = int(response.content)
+
+                if 1 <= selection <= len(search_results):
+                    selected_video = search_results[selection - 1]
+                    music_queue.append(selected_video['webpage_url'])
+                    await ctx.send(f"✅ Added to queue: {selected_video['title']}")
+                else:
+                    await ctx.send("⚠️ Invalid selection!")
+            except asyncio.TimeoutError:
+                await ctx.send("⚠️ You took too long to respond. Please try again.")
+
         if not ctx.voice_client.is_playing():
             await play_next(ctx)
 
@@ -133,3 +181,18 @@ def setup(bot):
             await ctx.send(f"Current queue:\n{queue_list}")
         else:
             await ctx.send("The queue is empty!")
+
+    # Define the `/skip` command
+    @bot.command()
+    async def skip(ctx):
+        """Skip the current playing song."""
+        if ctx.voice_client is None or not ctx.voice_client.is_playing():
+            await ctx.send("⚠️ No song is currently playing!")
+            return
+
+        # Stop the current song
+        ctx.voice_client.stop()
+        await ctx.send("⏭️ Skipped the current song!")
+
+        # Play the next song in the queue, if any
+        await play_next(ctx)
