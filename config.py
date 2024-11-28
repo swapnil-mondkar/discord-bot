@@ -13,14 +13,31 @@ from dotenv import load_dotenv
 # Load environment variables from the .env file
 load_dotenv()
 
-# MongoDB configuration
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-MONGO_DB = os.getenv("MONGO_DB", "bot")
+def get_env_variable(var_name, default=None, required=False):
+    """
+    Fetches an environment variable and raises an error if it's missing and required.
 
-# Discord configuration
-DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-CHANNEL_FOR_MESSAGE = os.getenv("CHANNEL_FOR_MESSAGE")
-CHANNEL_FOR_LOGS = os.getenv("CHANNEL_FOR_LOGS")
+    Args:
+        var_name (str): The name of the environment variable to fetch.
+        default (str, optional): Default value to return if the variable is not found. Defaults to None.
+        required (bool, optional): If True, an error will be raised if the variable is not found. Defaults to False.
 
-# Command configuration
-COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
+    Returns:
+        str: The value of the environment variable.
+    """
+    value = os.getenv(var_name, default)
+    if required and value is None:
+        raise ValueError(f"Environment variable {var_name} is required but not set.")
+    return value
+
+# MongoDB Configuration
+MONGO_URL = get_env_variable("MONGO_URL", "mongodb://localhost:27017")
+MONGO_DB = get_env_variable("MONGO_DB", "bot")
+
+# Discord Bot Configuration
+DISCORD_TOKEN = get_env_variable("DISCORD_TOKEN", required=True)
+CHANNEL_FOR_MESSAGE = get_env_variable("CHANNEL_FOR_MESSAGE", required=True)
+CHANNEL_FOR_LOGS = get_env_variable("CHANNEL_FOR_LOGS", required=True)
+
+# Command Configuration
+COMMAND_PREFIX = get_env_variable("COMMAND_PREFIX", "!")
