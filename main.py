@@ -14,7 +14,6 @@
 from intents import create_bot
 from loader import setup_bot
 from executor import run_bot
-from mongo import connect_mongo
 
 # Create the bot instance
 bot = create_bot()

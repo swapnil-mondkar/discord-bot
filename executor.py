@@ -13,25 +13,29 @@ from commands.logger import log_error
 def run_bot(bot):
     """
     Retrieves the bot token from the environment and starts the bot.
-    
+
     This function checks for the bot's token in the environment variables 
     and starts the bot using that token. If the token is missing or there 
-    is an error during startup, it will print an error message.
+    is an error during startup, it logs an error and terminates the process.
 
     Args:
         bot (bot): The Discord bot bot instance to run.
     """
-    # Retrieve the bot token from the environment
+    # Retrieve the bot token from the config
     TOKEN = config.DISCORD_TOKEN
 
-    # If the token is not found, print an error and exit
+    # Check if the token is present
     if not TOKEN:
-        log_error("DISCORD_TOKEN not found in .env file.")
-        exit()
+        error_message = "DISCORD_TOKEN not found in config file or environment variables."
+        log_error(error_message)
+        raise ValueError(error_message)
 
     try:
         # Start the bot using the provided token
         bot.run(TOKEN)
+
     except Exception as e:
         # Handle any errors that occur during bot startup
-        log_error(f"Error starting the bot: {e}")
+        error_message = f"Error starting the bot: {str(e)}"
+        log_error(error_message)
+        raise
