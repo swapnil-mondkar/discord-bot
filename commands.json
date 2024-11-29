@@ -16,5 +16,197 @@
         "example": "/scanchannel",
         "description": "Scans all channels in the server and stores the retrieved data in the database for further analysis.",
         "timestamp": "2024-11-21T14:00:00Z"
+    },
+    {
+        "name": "Scan Members Command",
+        "example": "/scanmembers",
+        "description": "Scans all members in the server and stores the retrieved data in the database for further analysis.",
+        "timestamp": "2024-11-21T14:00:00Z"
+    },
+    {
+        "name": "Calculate Command",
+        "example": "/calculate 2 + 2 * 5",
+        "description": "Evaluates a mathematical expression and returns the result.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "Date Difference Command",
+        "example": "/date_difference 2024-01-01 2024-11-01",
+        "description": "Calculates the difference between two dates in days, weeks, and months.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "Add Days Command",
+        "example": "/add_days 2024-11-01 10",
+        "description": "Adds or subtracts a specified number of days to or from a given date.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "Day of the Week Command",
+        "example": "/day_of_week 2024-11-01",
+        "description": "Finds the day of the week for a specific date.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "Age Command",
+        "example": "/age 2000-05-15",
+        "description": "Calculates the age in years, months, and days based on a given birthdate.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "Generate Calendar Command",
+        "example": "/generate_calendar 2024 11",
+        "description": "Generates a calendar for the specified month and year.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "kick",
+        "example": "/kick @user [reason]",
+        "description": "Kicks a user from the server.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "ban",
+        "example": "/ban @user [reason]",
+        "description": "Bans a user from the server.",
+        "timestamp": "2024-11-29T14:01:00Z"
+    },
+    {
+        "name": "mute",
+        "example": "/mute @user [reason]",
+        "description": "Mutes a user in the server.",
+        "timestamp": "2024-11-29T14:02:00Z"
+    },
+    {
+        "name": "unmute",
+        "example": "/unmute @user",
+        "description": "Unmutes a user in the server.",
+        "timestamp": "2024-11-29T14:03:00Z"
+    },
+    {
+        "name": "warn",
+        "example": "/warn @user [reason]",
+        "description": "Warns a user in the server.",
+        "timestamp": "2024-11-29T14:04:00Z"
+    },
+    {
+        "name": "warnings",
+        "example": "/warnings @user",
+        "description": "Fetches the warnings for a user.",
+        "timestamp": "2024-11-29T14:05:00Z"
+    },
+    {
+        "name": "lockdown",
+        "example": "/lockdown [channel]",
+        "description": "Locks down a text channel to prevent messages.",
+        "timestamp": "2024-11-29T14:06:00Z"
+    },
+    {
+        "name": "unlock",
+        "example": "/unlock [channel]",
+        "description": "Unlocks a text channel to allow messages.",
+        "timestamp": "2024-11-29T14:07:00Z"
+    },
+    {
+        "name": "slowmode",
+        "example": "/slowmode [seconds]",
+        "description": "Sets a slowmode delay in a channel.",
+        "timestamp": "2024-11-29T14:08:00Z"
+    },
+    {
+        "name": "addrole",
+        "example": "/addrole @user [role_name]",
+        "description": "Assigns a role to a user.",
+        "timestamp": "2024-11-29T14:09:00Z"
+    },
+    {
+        "name": "removerole",
+        "example": "/removerole @user [role_name]",
+        "description": "Removes a role from a user.",
+        "timestamp": "2024-11-29T14:10:00Z"
+    },
+    {
+        "name": "userinfo",
+        "example": "/userinfo @user",
+        "description": "Displays information about a user.",
+        "timestamp": "2024-11-29T14:11:00Z"
+    },
+    {
+        "name": "serverinfo",
+        "example": "/serverinfo",
+        "description": "Displays information about the server.",
+        "timestamp": "2024-11-29T14:12:00Z"
+    },
+    {
+        "name": "temprole",
+        "example": "/temprole @user [role_name] [duration]",
+        "description": "Assigns a temporary role to a user for a specified duration.",
+        "timestamp": "2024-11-29T14:13:00Z"
+    },
+    {
+        "name": "softban",
+        "example": "/softban @user [reason]",
+        "description": "Bans and immediately unbans a user (softban).",
+        "timestamp": "2024-11-29T14:14:00Z"
+    },
+    {
+        "name": "poll",
+        "example": "/poll [question]",
+        "description": "Creates a poll with a Yes/No reaction.",
+        "timestamp": "2024-11-29T14:15:00Z"
+    },
+    {
+        "name": "announce",
+        "example": "/announce [channel] [message]",
+        "description": "Makes an announcement in a specified channel.",
+        "timestamp": "2024-11-29T14:16:00Z"
+    },
+    {
+        "name": "connect",
+        "example": "/connect",
+        "description": "Connects the bot to the user's voice channel.",
+        "timestamp": "2024-11-29T14:00:00Z"
+    },
+    {
+        "name": "disconnect",
+        "example": "/disconnect",
+        "description": "Disconnects the bot from the voice channel.",
+        "timestamp": "2024-11-29T14:01:00Z"
+    },
+    {
+        "name": "play",
+        "example": "/play [song name or URL]",
+        "description": "Plays a song from YouTube based on the search or URL.",
+        "timestamp": "2024-11-29T14:02:00Z"
+    },
+    {
+        "name": "pause",
+        "example": "/pause",
+        "description": "Pauses the current playback.",
+        "timestamp": "2024-11-29T14:03:00Z"
+    },
+    {
+        "name": "resume",
+        "example": "/resume",
+        "description": "Resumes the paused playback.",
+        "timestamp": "2024-11-29T14:04:00Z"
+    },
+    {
+        "name": "stop",
+        "example": "/stop",
+        "description": "Stops the current playback.",
+        "timestamp": "2024-11-29T14:05:00Z"
+    },
+    {
+        "name": "queue",
+        "example": "/queue",
+        "description": "Displays the current song queue.",
+        "timestamp": "2024-11-29T14:06:00Z"
+    },
+    {
+        "name": "skip",
+        "example": "/skip",
+        "description": "Skips the current song and plays the next one in the queue.",
+        "timestamp": "2024-11-29T14:07:00Z"
     }
 ]
