@@ -8,12 +8,11 @@
 # scanner.py
 
 from .logger import log_to_mongo, log_error
-from mongo import connect_mongo
-
-db = connect_mongo()
-guilds_collection = db["guilds"]
 
 def setup(bot):
+
+    db = bot.db
+    guilds_collection = db["guilds"]
 
     # scanchannel
     @bot.command()

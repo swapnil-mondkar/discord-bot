@@ -8,7 +8,7 @@
 # mongo.py
 
 from pymongo import MongoClient
-import config
+import bot.config as config
 
 # MongoDB connection setup
 def connect_mongo():

@@ -7,8 +7,9 @@
 
 # intents.py
 
-import config
+import bot.config as config
 import logging
+from .mongo import connect_mongo
 from discord import Intents
 from discord.ext.commands import Bot
 
@@ -46,6 +47,9 @@ def create_bot() -> Bot:
 
     # Create the bot instance with the specified command prefix and intents
     bot = Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
+
+    # Database Connection
+    bot.db = connect_mongo()
 
     # Log successful bot creation
     logger.info(f"Bot created with command prefix: {config.COMMAND_PREFIX}")
