@@ -9,12 +9,11 @@
 
 import discord
 from .logger import log_to_mongo, log_error
-from mybot.mongo import connect_mongo
-
-db = connect_mongo()
-commands_collection = db["commands"]
 
 def setup(bot):
+
+    db = bot.db
+    commands_collection = db["commands"]
 
     @bot.command()
     async def commands(ctx):

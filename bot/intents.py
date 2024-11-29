@@ -7,9 +7,9 @@
 
 # intents.py
 
-import mybot.config as config
+import bot.config as config
 import logging
-from mongo import connect_mongo
+from .mongo import connect_mongo
 from discord import Intents
 from discord.ext.commands import Bot
 

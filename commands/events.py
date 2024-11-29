@@ -8,7 +8,7 @@
 # events.py
 
 from discord import Member, Embed
-import mybot.config as config
+import bot.config as config
 from .logger import log_error
 
 def setup(bot):
