@@ -9,7 +9,7 @@
 
 import discord
 from .logger import log_to_mongo, log_error
-from mongo import connect_mongo
+from mybot.mongo import connect_mongo
 
 db = connect_mongo()
 commands_collection = db["commands"]

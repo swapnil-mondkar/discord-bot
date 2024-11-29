@@ -9,7 +9,7 @@
 
 import logging
 from datetime import datetime
-from mongo import connect_mongo
+from mybot.mongo import connect_mongo
 
 # Connect to MongoDB
 db = connect_mongo()

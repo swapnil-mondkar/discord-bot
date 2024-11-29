@@ -8,7 +8,7 @@
 # scanner.py
 
 from .logger import log_to_mongo, log_error
-from mongo import connect_mongo
+from mybot.mongo import connect_mongo
 
 db = connect_mongo()
 guilds_collection = db["guilds"]
