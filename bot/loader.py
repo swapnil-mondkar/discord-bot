@@ -16,19 +16,19 @@ def setup_bot(bot):
     Automatically loads and sets up all command modules in the `commands` directory.
 
     Args:
-        bot (commands.Bot): The Discord bot instance to bind modules to.
+        bot (cogs.Bot): The Discord bot instance to bind modules to.
     """
     # Define the directory containing command modules
-    commands_dir = "commands"
+    cogs_dir = "cogs"
 
     # Initialize logger
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
-    # Iterate through all Python files in the `commands` directory
-    for filename in os.listdir(commands_dir):
+    # Iterate through all Python files in the `cogs` directory
+    for filename in os.listdir(cogs_dir):
         if filename.endswith(".py") and filename != "__init__.py":
-            module_name = f"commands.{filename[:-3]}"
+            module_name = f"cogs.{filename[:-3]}"
 
             try:
                 # Dynamically import the module

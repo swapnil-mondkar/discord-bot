@@ -7,16 +7,16 @@
 
 # message.py
 
-from .logger import log_to_mongo, log_error
+from bot.logger import log_to_mongo, log_error
 
 def setup(bot):
 
-    # Define the `/pm` command
+    # Define the `/message` command
     @bot.command()
-    async def pm(ctx, *, user_message: str = None):
+    async def message(ctx, *, user_message: str = None):
         # Check if the user provided a message
         if not user_message:
-            await ctx.send("😕 Please provide a message after `/pm`. Example: `/pm Hello Bot!`")
+            await ctx.send("😕 Please provide a message after `/message`. Example: `/message Hello Bot!`")
             return
 
         # Log the message to MongoDB
