@@ -1,7 +1,7 @@
 [
     {
         "name": "Message Command",
-        "example": "/pm <message_content>",
+        "example": "/message <message_content>",
         "description": "Sends back the same message prefixed with 'Hello'. Useful for testing bot responses.",
         "timestamp": "2024-11-21T12:00:00Z"
     },

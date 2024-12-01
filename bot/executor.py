@@ -8,7 +8,7 @@
 # executor.py
 
 import bot.config as config
-from commands.logger import log_error
+from bot.logger import log_error
 
 def run_bot(bot):
     """

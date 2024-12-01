@@ -8,7 +8,7 @@
 # purge.py
 
 import discord
-from .logger import log_to_mongo, log_error
+from bot.logger import log_to_mongo, log_error
 
 def setup(bot):
 
