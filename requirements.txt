@@ -5,3 +5,4 @@ PyNaCl
 discord.py[voice]
 ffmpeg
 yt-dlp
+PyGithub
