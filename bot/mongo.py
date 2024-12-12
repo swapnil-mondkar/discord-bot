@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# mongo.py
+# bot/mongo.py
 
 from pymongo import MongoClient
 import bot.config as config

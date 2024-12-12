@@ -5,30 +5,38 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# loader.py
+# bot/loader.py
+
+"""
+    This module dynamically loads and sets up all command modules in the `cogs` directory.
+"""
 
 import os
 import importlib
 import logging
+from bot.logger import logger  # Import the global logger instance
 
 def setup_bot(bot):
     """
-    Automatically loads and sets up all command modules in the `commands` directory.
+    Automatically loads and sets up all command modules in the `cogs` directory.
 
     Args:
-        bot (cogs.Bot): The Discord bot instance to bind modules to.
+        bot (commands.Bot): The Discord bot instance to bind modules to.
     """
     # Define the directory containing command modules
     cogs_dir = "cogs"
 
-    # Initialize logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
+    # Check if the 'cogs' directory exists
+    if not os.path.exists(cogs_dir):
+        logger.log_to_file(logging.ERROR, f"Directory '{cogs_dir}' does not exist. No cogs to load.")
+        return
+
+    logger.log_to_file(logging.INFO, f"Loading command modules from '{cogs_dir}'...")
 
     # Iterate through all Python files in the `cogs` directory
     for filename in os.listdir(cogs_dir):
         if filename.endswith(".py") and filename != "__init__.py":
-            module_name = f"cogs.{filename[:-3]}"
+            module_name = f"{cogs_dir}.{filename[:-3]}"
 
             try:
                 # Dynamically import the module
@@ -37,11 +45,13 @@ def setup_bot(bot):
                 # Call the `setup` function if it exists
                 if hasattr(module, "setup"):
                     module.setup(bot)
-                    logger.info(f"Loaded module: {module_name}")
+                    logger.log_to_file(logging.INFO, f"Successfully loaded module: {module_name}")
                 else:
-                    logger.warning(f"Skipped module (no setup function): {module_name}")
-            
-            except Exception as e:
-                logger.error(f"Error loading module {module_name}: {e}")
+                    logger.log_to_file(logging.WARNING, f"Skipped module (no setup function): {module_name}")
 
-    logger.info("All modules have been loaded successfully.")
+            except ModuleNotFoundError as mnfe:
+                logger.log_to_file(logging.ERROR, f"Module not found: {module_name}. Error: {mnfe}")
+            except Exception as e:
+                logger.log_to_file(logging.ERROR, f"Error loading module {module_name}: {e}")
+
+    logger.log_to_file(logging.INFO, "All modules have been processed.")

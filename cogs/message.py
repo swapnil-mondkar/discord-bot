@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# message.py
+# cogs/message.py
 
 from bot.logger import log_to_mongo, log_error
 

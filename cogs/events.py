@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# events.py
+# cogs/events.py
 
 from discord import Member, Embed
 import bot.config as config

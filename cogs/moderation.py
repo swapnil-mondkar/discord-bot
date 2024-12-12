@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# moderation.py
+# cogs/moderation.py
 
 import discord
 from bot.logger import log_to_mongo, log_error

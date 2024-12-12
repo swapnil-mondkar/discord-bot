@@ -1,21 +1,22 @@
 # Copyright (c) 2024 NULL Lab
 # All rights reserved.
-# 
+#
 # This file is part of the NULL Lab project.
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# intents.py
+# bot/intents.py
 
-import bot.config as config
+"""
+    This module initializes and configures the Discord bot's intents and instance.
+"""
+
 import logging
-from .mongo import connect_mongo
 from discord import Intents
 from discord.ext.commands import Bot
-
-# Initialize logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+from bot.config import COMMAND_PREFIX
+from bot.mongo import connect_mongo
+from bot.logger import logger
 
 def setup_intents() -> Intents:
     """
@@ -24,17 +25,21 @@ def setup_intents() -> Intents:
     Returns:
         Intents: The configured Intents object.
     """
-    # Create a default set of intents
-    intents = Intents.default()
+    try:
+        # Create a default set of intents
+        intents = Intents.default()
 
-    # Enable specific intents
-    intents.message_content = True  # Allow the bot to read message content
-    intents.members = True  # Enable member tracking (join/leave events)
+        # Enable specific intents
+        intents.message_content = True  # Allow the bot to read message content
+        intents.members = True  # Enable member tracking (join/leave events)
 
-    # Log the enabled intents (you can expand this to log more details)
-    logger.info("Intents configured: message_content, members")
+        # Log the enabled intents
+        logger.log_to_file(logging.INFO, "Intents configured: message_content=True, members=True")
 
-    return intents
+        return intents
+    except Exception as e:
+        logger.log_to_file(logging.ERROR, f"Error setting up intents: {e}")
+        raise
 
 def create_bot() -> Bot:
     """
@@ -43,15 +48,20 @@ def create_bot() -> Bot:
     Returns:
         Bot: The configured Discord Bot instance.
     """
-    intents = setup_intents()
+    try:
+        # Setup Discord intents
+        intents = setup_intents()
 
-    # Create the bot instance with the specified command prefix and intents
-    bot = Bot(command_prefix=config.COMMAND_PREFIX, intents=intents)
+        # Create the bot instance
+        bot = Bot(command_prefix=COMMAND_PREFIX, intents=intents)
 
-    # Database Connection
-    bot.db = connect_mongo()
+        # Establish database connection
+        bot.db = connect_mongo()
+        logger.log_to_file(logging.INFO, "Database connection established for the bot.")
+        # Log successful bot creation
+        logger.log_to_file(logging.INFO, f"Bot created with command prefix: '{COMMAND_PREFIX}'")
 
-    # Log successful bot creation
-    logger.info(f"Bot created with command prefix: {config.COMMAND_PREFIX}")
-
-    return bot
+        return bot
+    except Exception as e:
+        logger.log_to_file(logging.ERROR, f"Error creating the bot: {e}")
+        raise

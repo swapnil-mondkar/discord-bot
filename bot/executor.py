@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# executor.py
+# bot/executor.py
 
 import bot.config as config
 from bot.logger import log_error
