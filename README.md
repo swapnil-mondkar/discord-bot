@@ -11,10 +11,30 @@ A simple and customizable Discord bot built with Python.
 
 ---
 
-## **Setup Instructions**  
+## **Getting Started**
 
-### **1. Clone the Repository**
-```bash
-git clone https://github.com/swapnil-mondkar/Discord-Bot.git
-cd Discord-Bot
+### **Quick Setup**
+Follow the instructions in the [Setup Guide](docs/setup.md) to quickly get the bot running.
 
+---
+
+## **Documentation**
+
+For detailed information about features, commands, and customization, refer to the documentation in the `docs` folder:
+
+- [Setup Instructions](docs/setup.md)
+- [Commands List](docs/commands.md)
+- [Intents and Permissions](docs/intents.md)
+- [Logging System](docs/logging.md)
+- [Database Usage](docs/database.md)
+- [Contributing](docs/contributing.md)
+
+---
+
+## **Contributing**
+We welcome contributions! Check out the [Contributing Guide](docs/contributing.md) to get started.
+
+---
+
+## **License**
+This project is proprietary and confidential. Unauthorized use or distribution is strictly prohibited.
