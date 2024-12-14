@@ -13,7 +13,7 @@
 
 import logging
 from datetime import datetime
-from bot.mongo import connect_mongo
+from bot.extensions.mongo import connect_mongo
 
 class Logger:
     def __init__(self, log_file="bot.log", log_level=logging.ERROR):

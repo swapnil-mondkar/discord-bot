@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# cogs/voice.py
+# bot.cogs.music.voice.py
 
 import discord
 import yt_dlp as youtube_dl

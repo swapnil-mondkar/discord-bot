@@ -14,9 +14,9 @@
 import logging
 from discord import Intents
 from discord.ext.commands import Bot
-from bot.config import COMMAND_PREFIX
-from bot.mongo import connect_mongo
-from bot.logger import logger
+from bot.extensions.config import COMMAND_PREFIX
+from bot.extensions.mongo import connect_mongo
+from bot.extensions.logger import logger
 
 def setup_intents() -> Intents:
     """

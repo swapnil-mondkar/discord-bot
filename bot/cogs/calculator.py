@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# cogs/alculator.py
+# bot.cogs.calculator.py
 
 import math
 from datetime import datetime, timedelta

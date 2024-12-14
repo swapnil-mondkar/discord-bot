@@ -14,7 +14,7 @@ A simple and customizable Discord bot built with Python.
 ## **Getting Started**
 
 ### **Quick Setup**
-Follow the instructions in the [Setup Guide](docs/setup.md) to quickly get the bot running.
+Follow the instructions in the [Setup Guide](bot/docs/setup.md) to quickly get the bot running.
 
 ---
 
@@ -22,17 +22,17 @@ Follow the instructions in the [Setup Guide](docs/setup.md) to quickly get the b
 
 For detailed information about features, commands, and customization, refer to the documentation in the `docs` folder:
 
-- [Setup Instructions](docs/setup.md)
-- [Commands List](docs/commands.md)
-- [Intents and Permissions](docs/intents.md)
-- [Logging System](docs/logging.md)
-- [Database Usage](docs/database.md)
-- [Contributing](docs/contributing.md)
+- [Setup Instructions](bot/docs/setup.md)
+- [Commands List](bot/docs/commands.md)
+- [Intents and Permissions](bot/docs/intents.md)
+- [Logging System](bot/docs/logging.md)
+- [Database Usage](bot/docs/database.md)
+- [Contributing](bot/docs/contributing.md)
 
 ---
 
 ## **Contributing**
-We welcome contributions! Check out the [Contributing Guide](docs/contributing.md) to get started.
+We welcome contributions! Check out the [Contributing Guide](bot/docs/contributing.md) to get started.
 
 ---
 

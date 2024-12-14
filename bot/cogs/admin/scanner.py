@@ -5,9 +5,9 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# cogs/scanner.py
+# bot.cogs.admin.scanner.py
 
-from bot.logger import log_to_mongo, log_error
+from bot.extensions.logger import logger
 
 def setup(bot):
 
@@ -59,7 +59,7 @@ def setup(bot):
 
         except Exception as e:
             await ctx.send("⚠️ Something went wrong while scanning channels.")
-            log_error(f"Error in scanchannel: {e}")
+            logger.log_error(f"Error in scanchannel: {e}")
 
     # scanmember
     @bot.command()
@@ -102,4 +102,4 @@ def setup(bot):
 
         except Exception as e:
             await ctx.send("⚠️ Something went wrong while scanning members.")
-            log_error(f"Error in scanmember: {e}")
+            logger.log_error(f"Error in scanmember: {e}")

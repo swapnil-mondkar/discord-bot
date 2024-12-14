@@ -11,9 +11,9 @@
     Isko mat chhed, jab tak code ka pura gyaan na ho, samjha? - Swapnil
 """
 
-from bot.intents import create_bot
-from bot.loader import setup_bot
-from bot.executor import run_bot
+from bot.extensions.intents import create_bot
+from bot.extensions.loader import setup_bot
+from bot.extensions.executor import run_bot
 
 def main():
     """

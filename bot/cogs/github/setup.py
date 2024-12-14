@@ -5,7 +5,7 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# cogs/github.py
+# bot.cogs.github.setup.py
 
 import discord
 import asyncio
