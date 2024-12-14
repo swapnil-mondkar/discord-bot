@@ -5,11 +5,11 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# events.py
+# bot.cogs.events.events.py
 
 from discord import Member, Embed
-import bot.config as config
-from bot.logger import log_error
+import bot.extensions.config as config
+from bot.extensions.logger import logger
 
 def setup(bot):
     """
@@ -39,7 +39,7 @@ def setup(bot):
 
             await channel.send(embed=embed)
         else:
-            log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
+            logger.log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
 
     # Event for when a member leaves the server
     @bot.event
@@ -65,4 +65,4 @@ def setup(bot):
 
             await channel.send(embed=embed)
         else:
-            log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")
+            logger.log_error(f"Channel with ID {specific_channel_id} not found. Please check the channel ID.")

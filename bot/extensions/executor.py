@@ -5,10 +5,10 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# executor.py
+# bot/executor.py
 
-import bot.config as config
-from bot.logger import log_error
+import bot.extensions.config as config
+from bot.extensions.logger import logger
 
 def run_bot(bot):
     """
@@ -27,7 +27,7 @@ def run_bot(bot):
     # Check if the token is present
     if not TOKEN:
         error_message = "DISCORD_TOKEN not found in config file or environment variables."
-        log_error(error_message)
+        logger.log_error(error_message)
         raise ValueError(error_message)
 
     try:
@@ -37,5 +37,5 @@ def run_bot(bot):
     except Exception as e:
         # Handle any errors that occur during bot startup
         error_message = f"Error starting the bot: {str(e)}"
-        log_error(error_message)
+        logger.log_error(error_message)
         raise

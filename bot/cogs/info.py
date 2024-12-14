@@ -5,10 +5,10 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# info.py
+# bot.cogs.info.py
 
 import discord
-from bot.logger import log_to_mongo, log_error
+from bot.extensions.logger import logger
 
 def setup(bot):
 

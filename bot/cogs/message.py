@@ -5,9 +5,9 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# message.py
+# bot.cogs.message.py
 
-from bot.logger import log_to_mongo, log_error
+from bot.extensions.logger import logger
 
 def setup(bot):
 
@@ -21,7 +21,7 @@ def setup(bot):
 
         # Log the message to MongoDB
         try:
-            log_to_mongo(
+            logger.log_to_mongo(
                 author_name=ctx.author.name,
                 author_id=str(ctx.author.id),
                 message=user_message,
@@ -29,7 +29,7 @@ def setup(bot):
             )
             print(f"Message logged: {user_message} from {ctx.author.name}")
         except Exception as e:
-            log_error(f"Error storing message log: {e}")
+            logger.log_error(f"Error storing message log: {e}")
             await ctx.send("⚠️ Something went wrong while logging the message. Please try again later.")
 
         # Process the user message and send a response

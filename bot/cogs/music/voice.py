@@ -5,13 +5,14 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited.
 # Proprietary and confidential.
 
-# voice.py
+# bot.cogs.music.voice.py
 
 import discord
 import yt_dlp as youtube_dl
 import asyncio
 from functools import partial
 import os
+from discord.ext import commands
 
 # A queue to hold song URLs
 music_queue = []
@@ -40,6 +41,7 @@ def setup(bot):
 
     # Define the `/join` command
     @bot.command()
+    @commands.guild_only()
     async def join(ctx):
         # Check if the command was run in a voice channel
         if ctx.author.voice:
@@ -58,6 +60,7 @@ def setup(bot):
 
     # Define the `/leave` command
     @bot.command()
+    @commands.guild_only()
     async def leave(ctx):
         """Command to make the bot leave the voice channel."""
         if ctx.voice_client:
@@ -196,6 +199,7 @@ def setup(bot):
 
     # Adjust the `/play` command to enqueue songs
     @bot.command()
+    @commands.guild_only()
     async def play(ctx, *, query):
         if not ctx.voice_client:
             await ctx.invoke(join)
@@ -244,6 +248,7 @@ def setup(bot):
 
     # Define the `/pause` command
     @bot.command()
+    @commands.guild_only()
     async def pause(ctx):
         if ctx.voice_client and ctx.voice_client.is_playing():
             ctx.voice_client.pause()
@@ -253,6 +258,7 @@ def setup(bot):
 
     # Define the `/resume` command
     @bot.command()
+    @commands.guild_only()
     async def resume(ctx):
         if ctx.voice_client and ctx.voice_client.is_paused():
             ctx.voice_client.resume()
@@ -262,6 +268,7 @@ def setup(bot):
 
     # Define the `/stop` command
     @bot.command()
+    @commands.guild_only()
     async def stop(ctx):
         """Stop playback, clean up the current file, and clear the queue."""
         global current_song  # Ensure access to the global variable tracking the current song
@@ -291,6 +298,7 @@ def setup(bot):
 
     # Define the `/queue` command
     @bot.command()
+    @commands.guild_only()
     async def queue(ctx):
         if music_queue:
             queue_list = "\n".join([f"{idx+1}. {url}" for idx, url in enumerate(music_queue)])
@@ -300,6 +308,7 @@ def setup(bot):
 
     # Define the `/skip` command
     @bot.command()
+    @commands.guild_only()
     async def skip(ctx):
         """Skip the current playing song and clean up the file."""
         if ctx.voice_client is None or not ctx.voice_client.is_playing():
