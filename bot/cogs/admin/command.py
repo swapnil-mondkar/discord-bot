@@ -9,6 +9,7 @@
 
 import discord
 from math import ceil
+from bot.extensions.logger import logger
 
 def setup(bot):
 
@@ -19,9 +20,9 @@ def setup(bot):
     async def commands(ctx):
         try:
             # Fetch all cogs from MongoDB
-            cogs_list = list(cogs_collection.find())  # Convert Cursor to a list
+            cogs_list = list(cogs_collection.find())
 
-            if len(cogs_list) == 0:  # Check if the list is empty
+            if len(cogs_list) == 0:
                 await ctx.send("No commands available right now.")
                 return
 
@@ -58,7 +59,7 @@ def setup(bot):
             if total_pages > 1:
                 await message.add_reaction("⬅️")
                 await message.add_reaction("➡️")
-            await message.add_reaction("🔄")  # Change page size
+            await message.add_reaction("🔄")
 
             # Reaction listener
             def check(reaction, user):
@@ -99,4 +100,4 @@ def setup(bot):
 
         except Exception as e:
             await ctx.send("⚠️ Something went wrong while fetching commands.")
-            print(f"Error fetching commands: {e}")
+            logger.log_error(f"Error fetching commands: {e}")

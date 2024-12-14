@@ -11,6 +11,7 @@ import discord
 import asyncio
 from github import Github
 from discord.ui import Button, View
+from discord.ext import commands
 from datetime import datetime, timedelta
 
 def setup(bot):
@@ -77,6 +78,7 @@ def setup(bot):
             await ctx.send("You took too long to provide the details. Please try again.")
 
     @bot.command()
+    @commands.guild_only()
     async def show_github(ctx):
         """Show all configured GitHub repositories for the guild."""
         if not ctx.guild:
@@ -101,6 +103,7 @@ def setup(bot):
         await ctx.send(repo_list)
 
     @bot.command()
+    @commands.guild_only()
     async def contributions(ctx):
         """Start the process to select a dynamic date range for contributions."""
         if not ctx.guild:
