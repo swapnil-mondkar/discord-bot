@@ -9,6 +9,7 @@
 
 import discord
 import asyncio
+import requests
 from github import Github
 from discord.ui import Button, View
 from discord.ext import commands
@@ -17,101 +18,102 @@ from datetime import datetime, timedelta
 def setup(bot):
 
     db = bot.db
-    guilds_collection = db['guilds']
+    users_collection = db['users']
 
     @bot.command()
-    async def set_github(ctx):
-        """Start the process of setting GitHub repository configuration in DMs."""
-        if not ctx.guild:
-            await ctx.send("This command can only be used in a server.")
-            return
+    async def set_github(ctx, github_username):
+        """Command to fetch GitHub data and store in MongoDB."""
+        # Check if the user has a GitHub token stored
+        user_data = users_collection.find_one({"discord_id": ctx.author.id})
+        headers = {}
+        
+        if user_data and "github_token" in user_data:
+            headers = {"Authorization": f"token {user_data['github_token']}"}
 
-        # Notify the user to send the details in DM
-        await ctx.send(
-            "Please send me the GitHub repository name and token via Direct Message (DM).\n"
-            "In the following format:\n"
-            "`repo_name: <repo_name>`\n"
-            "`token: <your_token>`\n"
-            "I will configure it for your server."
-        )
+        # Fetch GitHub user profile
+        url = f"https://api.github.com/users/{github_username}"
+        response = requests.get(url, headers=headers)
 
-        # Ask the user to DM the bot
-        try:
-            # Wait for the user's DM with both repo_name and token
-            def check(msg):
-                return msg.author == ctx.author and isinstance(msg.channel, discord.DMChannel)
+        if response.status_code == 200:
+            data = response.json()
+            user_profile = {
+                "github_username": data.get("login"),
+                "profile_url": data.get("html_url"),
+                "name": data.get("name"),
+                "bio": data.get("bio"),
+                "public_repos": data.get("public_repos"),
+                "followers": data.get("followers"),
+                "following": data.get("following")
+            }
 
-            # Wait for the message with repo_name
-            dm_message = await bot.wait_for('message', check=check, timeout=60.0)
+            # Fetch repositories (including private if token is present)
+            repos_url = f"https://api.github.com/user/repos"
+            repos_response = requests.get(repos_url, headers=headers)
+            repos_data = repos_response.json() if repos_response.status_code == 200 else []
+            
+            # Add repositories to the user's profile
+            user_profile["repos"] = [{"name": repo["name"], "private": repo["private"], "html_url": repo["html_url"]} for repo in repos_data]
 
-            # Extract repo_name and token from the DM message
-            if dm_message.content.startswith('repo_name:') and 'token:' in dm_message.content:
-                repo_name = dm_message.content.split('repo_name:')[1].split('token:')[0].strip()
-                token = dm_message.content.split('token:')[1].strip()
+            # Insert or update the user profile in MongoDB
+            users_collection.update_one(
+                {"discord_id": ctx.author.id},
+                {"$addToSet": {"github": user_profile}},
+                upsert=True
+            )
 
-                # Proceed with the repo_name and token
-                guild_id = ctx.guild.id
-                created_by = ctx.author.id
-
-                # Structure the new repository data
-                new_repo = {
-                    "repo_name": repo_name,
-                    "token": token,
-                    "created_by": created_by
-                }
-
-                # Update the guild's document to include the new repository
-                guilds_collection.update_one(
-                    {"guild_id": guild_id},
-                    {"$addToSet": {"github": new_repo}},
-                    upsert=True
+            await ctx.send(f"GitHub profile for **{github_username}** linked successfully!")
+            if not headers:
+                await ctx.send(
+                    "Only public repositories have been fetched. "
+                    "If you want to fetch private repositories too, please run `!github_token token` in a private message to me, and run this command again."
                 )
+        else:
+            await ctx.send(f"Could not fetch GitHub profile for **{github_username}**. Please check the username or ensure your token is valid.")
 
-                await dm_message.author.send("Your GitHub repository has been successfully configured!")
-            else:
-                await dm_message.author.send(
-                    "Invalid format. Please provide both the `repo_name` and `token` in the following format:\n"
-                    "`repo_name: <repo_name>`\n"
-                    "`token: <your_token>`"
-                )
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to provide the details. Please try again.")
+    @bot.command()
+    async def github_token(ctx, token: str):
+        """Store GitHub personal access token (PAT) securely in MongoDB under the 'github' field."""
+        # Check if the command is sent in a DM channel
+        if isinstance(ctx.channel, discord.DMChannel):
+            # Store the token securely in MongoDB for the user
+            users_collection.update_one(
+                {"discord_id": ctx.author.id},
+                {"$set": {"github.token": token}},
+                upsert=True
+            )
+            await ctx.send("Your GitHub token has been securely stored!")
+        else:
+            await ctx.send("Please send this command as a private message (DM) for security.")
 
     @bot.command()
     @commands.guild_only()
     async def show_github(ctx):
-        """Show all configured GitHub repositories for the guild."""
-        if not ctx.guild:
-            await ctx.send("This command can only be used in a server.")
+        """Show the GitHub profile(s) configured by the user."""
+        # Find the user data from the MongoDB collection
+        user_data = users_collection.find_one({"discord_id": ctx.author.id})
+
+        if not user_data or not user_data.get("github"):
+            await ctx.send("You haven't configured any GitHub profile yet. Use `!set_github <username>` to link your GitHub profile.")
             return
 
-        guild_id = ctx.guild.id
-        guild_config = guilds_collection.find_one({"guild_id": guild_id})
+        # Retrieve and display the user's GitHub profiles
+        profiles = user_data["github"]
+        profile_list = f"GitHub Profiles Linked by **{ctx.author}**:\n"
+        for profile in profiles:
+            profile_list += f"**Name**: {profile.get('name', 'N/A')}\n"
+            profile_list += f"**Username**: {profile.get('github_username')}\n"
+            profile_list += f"**Profile URL**: {profile.get('profile_url')}\n"
+            profile_list += f"**Followers**: {profile.get('followers', 'N/A')}\n"
+            profile_list += f"**Following**: {profile.get('following', 'N/A')}\n"
 
-        if not guild_config or not guild_config.get("github"):
-            await ctx.send("No GitHub repositories are configured for this server.")
-            return
-
-        # Retrieve and display the list of repositories
-        repos = guild_config["github"]
-        repo_list = "Configured GitHub Repositories:\n"
-        for repo in repos:
-            repo_list += f"Repo: {repo['repo_name']}\n"
-            repo_list += f"Created by: <@{repo['created_by']}>\n"
-            repo_list += f"Token: {'***REDACTED***'}\n\n"
-
-        await ctx.send(repo_list)
+        await ctx.send(profile_list)
 
     @bot.command()
     @commands.guild_only()
     async def contributions(ctx):
         """Start the process to select a dynamic date range for contributions."""
-        if not ctx.guild:
-            await ctx.send("This command can only be used in a server.")
-            return
 
-        guild_id = ctx.guild.id
-        config = guilds_collection.find_one({"guild_id": guild_id})
+        config = users_collection.find_one({"discord_id": ctx.author.id})
 
         if not config or "github" not in config:
             await ctx.send("GitHub configuration is not set for this server.")
@@ -157,8 +159,9 @@ def setup(bot):
             # Fetch contributions within the selected date range for the selected repositories
             contributions = {}
 
-            for repo in config['github']:
-                github = Github(repo['token'])
+            github = Github(config['github']['token'])
+
+            for repo in config['github']['repos']:
                 repo_instance = github.get_repo(repo['repo_name'])
                 contributors = repo_instance.get_contributors()
                 repo_contributions = []
