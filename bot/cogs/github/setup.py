@@ -26,9 +26,9 @@ def setup(bot):
         # Check if the user has a GitHub token stored
         user_data = users_collection.find_one({"discord_id": ctx.author.id})
         headers = {}
-        
-        if user_data and "github_token" in user_data:
-            headers = {"Authorization": f"token {user_data['github_token']}"}
+
+        if user_data and "github" in user_data and "token" in user_data["github"]:
+            headers = {"Authorization": f"token {user_data['github']['token']}"}
 
         # Fetch GitHub user profile
         url = f"https://api.github.com/users/{github_username}"
@@ -57,7 +57,9 @@ def setup(bot):
             # Insert or update the user profile in MongoDB
             users_collection.update_one(
                 {"discord_id": ctx.author.id},
-                {"$addToSet": {"github": user_profile}},
+                {
+                    "$set": {f"github.{key}": value for key, value in user_profile.items()}
+                },
                 upsert=True
             )
 
@@ -92,19 +94,18 @@ def setup(bot):
         # Find the user data from the MongoDB collection
         user_data = users_collection.find_one({"discord_id": ctx.author.id})
 
-        if not user_data or not user_data.get("github"):
+        if user_data and "github" not in user_data:
             await ctx.send("You haven't configured any GitHub profile yet. Use `!set_github <username>` to link your GitHub profile.")
             return
 
         # Retrieve and display the user's GitHub profiles
-        profiles = user_data["github"]
+        profile = user_data["github"]
         profile_list = f"GitHub Profiles Linked by **{ctx.author}**:\n"
-        for profile in profiles:
-            profile_list += f"**Name**: {profile.get('name', 'N/A')}\n"
-            profile_list += f"**Username**: {profile.get('github_username')}\n"
-            profile_list += f"**Profile URL**: {profile.get('profile_url')}\n"
-            profile_list += f"**Followers**: {profile.get('followers', 'N/A')}\n"
-            profile_list += f"**Following**: {profile.get('following', 'N/A')}\n"
+        profile_list += f"**Name**: {profile.get('name', 'N/A')}\n"
+        profile_list += f"**Username**: {profile.get('github_username', 'N/A')}\n"
+        profile_list += f"**Profile URL**: {profile.get('profile_url', 'N/A')}\n"
+        profile_list += f"**Followers**: {profile.get('followers', 'N/A')}\n"
+        profile_list += f"**Following**: {profile.get('following', 'N/A')}\n"
 
         await ctx.send(profile_list)
 
@@ -112,14 +113,13 @@ def setup(bot):
     @commands.guild_only()
     async def contributions(ctx):
         """Start the process to select a dynamic date range for contributions."""
-
         config = users_collection.find_one({"discord_id": ctx.author.id})
 
-        if not config or "github" not in config:
-            await ctx.send("GitHub configuration is not set for this server.")
+        if not config or "github" not in config or "token" not in config['github'] or "repos" not in config['github']:
+            await ctx.send("GitHub configuration is incomplete or missing for your account.")
             return
 
-        # Prepare buttons for time range selection (week, month, year)
+        # Prepare buttons for time range selection
         time_range_buttons = [
             Button(label="Last Day", custom_id="last_day"),
             Button(label="Last Week", custom_id="last_week"),
@@ -133,66 +133,66 @@ def setup(bot):
 
         await ctx.send("Please select a time range for the contributions:", view=time_range_view)
 
-        # Wait for the user's time range selection
         def check_time_range(interaction):
             return interaction.user == ctx.author and interaction.data['custom_id'] in ["last_day", "last_week", "last_month", "last_year"]
 
         try:
-            time_range_interaction = await bot.wait_for('interaction', check=check_time_range, timeout=60.0)
+            # Wait for the user's time range selection
+            time_range_interaction = await bot.wait_for('interaction', check=check_time_range, timeout=120.0)
             selected_range = time_range_interaction.data['custom_id']
             await time_range_interaction.response.send_message(f"Selected time range: {selected_range.replace('_', ' ').capitalize()}", ephemeral=True)
 
             # Calculate the date range based on selection
             if selected_range == "last_day":
                 start_date = datetime.now() - timedelta(days=1)
-                end_date = datetime.now()
             elif selected_range == "last_week":
                 start_date = datetime.now() - timedelta(weeks=1)
-                end_date = datetime.now()
             elif selected_range == "last_month":
                 start_date = datetime.now() - timedelta(weeks=4)
-                end_date = datetime.now()
             elif selected_range == "last_year":
                 start_date = datetime.now() - timedelta(days=365)
-                end_date = datetime.now()
 
-            # Fetch contributions within the selected date range for the selected repositories
+            end_date = datetime.now()
+
+            # Fetch contributions
             contributions = {}
-
             github = Github(config['github']['token'])
 
             for repo in config['github']['repos']:
-                repo_instance = github.get_repo(repo['repo_name'])
-                contributors = repo_instance.get_contributors()
-                repo_contributions = []
+                try:
+                    repo_instance = github.get_repo(config['github']['github_username'] + '/' + repo['name'])
+                    contributors = repo_instance.get_contributors()
+                    repo_contributions = []
 
-                for contributor in contributors:
-                    commits = repo_instance.get_commits(author=contributor.login, since=start_date, until=end_date)
-                    commit_count = commits.totalCount
-                    repo_contributions.append({
-                        "author_name": contributor.login,
-                        "commits": commit_count
-                    })
+                    for contributor in contributors:
+                        commits = repo_instance.get_commits(author=contributor.login, since=start_date, until=end_date)
+                        repo_contributions.append({
+                            "author_name": contributor.login,
+                            "commits": commits.totalCount
+                        })
 
-                if repo_contributions:
-                    contributions[repo['repo_name']] = repo_contributions
+                    if repo_contributions:
+                        contributions[repo['name']] = repo_contributions
+
+                except Exception as e:
+                    await ctx.send(f"Error fetching contributions for '{repo['name']}': {str(e)}")
+                    continue
 
             if not contributions:
-                await ctx.send(f"No contributions between {start_date.strftime('%Y-%m-%d')} and {end_date.strftime('%Y-%m-%d')}.")
+                await ctx.send(f"No contributions found between {start_date.strftime('%Y-%m-%d')} and {end_date.strftime('%Y-%m-%d')}.")
                 return
 
-            # Prepare the message to send
+            # Prepare the contribution message
             contribution_message = f"Contributions from {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}:\n"
-            
             for repo_name, contribs in contributions.items():
                 contribution_message += f"\n**{repo_name}**:\n"
                 for contrib in contribs:
                     contribution_message += f"- {contrib['author_name']}: {contrib['commits']} commits\n"
-            
-            # Split the message if it exceeds the character limit
+
+            # Split and send the message if it exceeds the limit
             MAX_MESSAGE_LENGTH = 2000
             for i in range(0, len(contribution_message), MAX_MESSAGE_LENGTH):
-                await ctx.send(contribution_message[i:i+MAX_MESSAGE_LENGTH])
+                await ctx.send(contribution_message[i:i + MAX_MESSAGE_LENGTH])
 
         except asyncio.TimeoutError:
             await ctx.send("You took too long to select the time range. Please try again.")
