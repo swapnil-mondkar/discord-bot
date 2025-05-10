@@ -4,6 +4,6 @@ __pycache__/
 *.log
 bot.log
 .venv/
-*.env
+.env
 .idea/
 .vscode/
