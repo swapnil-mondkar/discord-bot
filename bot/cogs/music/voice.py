@@ -28,6 +28,7 @@ ytdl_format_options = {
     'noplaylist': True,
     'quiet': True,
     'outtmpl': 'recording/%(extractor)s/%(id)s.%(ext)s',
+    'cookies': 'cookies.txt',
 }
 
 ffmpeg_options = {
